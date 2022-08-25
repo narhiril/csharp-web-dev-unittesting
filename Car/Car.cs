@@ -1,11 +1,13 @@
-﻿namespace CarNS
+﻿using System;
+
+namespace CarNS
 {
     public class Car
     {
         public string Make { get; set; }
         public string Model { get; set; }
         public int GasTankSize { get; set; }
-        public double GasTankLevel { get; set; }
+        public double GasTankLevel { get; private set; }
         public double MilesPerGallon { get; set; }
         public double Odometer { get; set; } = 0;
 
@@ -38,6 +40,18 @@
             double gallonsUsed = milesAbleToTravel / MilesPerGallon;
             GasTankLevel -= gallonsUsed;
             Odometer += milesAbleToTravel;
+        }
+
+        public void AddGas(double gas)
+        {
+            if (this.GasTankLevel + gas > this.GasTankLevel)
+            {
+                throw new ArgumentOutOfRangeException("Gas level cannot exceed tank size!");
+            }
+            else
+            {
+                this.GasTankLevel += gas;
+            }
         }
 
     }

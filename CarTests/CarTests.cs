@@ -1,14 +1,62 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using CarNS;
 
 namespace CarTests
 {
+    [TestClass]
     public class CarTests
     {
-        //TODO: add emptyTest so we can configure our runtime environment (remove this test before pushing to your personal GitHub account)
-        //TODO: constructor sets gasTankLevel properly
-        //TODO: gasTankLevel is accurate after driving within tank range
-        //TODO: gasTankLevel is accurate after attempting to drive past tank range
-        //TODO: can't have more gas than tank size, expect an exception
+        private Car testCar;
+        private const int testGasTankSize = 10;
+        private const double testMilesPerGallon = 50d;
+
+        [TestInitialize]
+        public void CreateTestCar()
+        {
+            testCar = new Car("Toyota", "Prius", testGasTankSize, testMilesPerGallon);
+        }
+
+        //[TestMethod]
+        //public void EmptyTest()
+        //{
+        //Assert.AreEqual(10, 10, 0.001d);
+        //}
+
+        [TestMethod]
+        public void TestInitialGasTankSize()
+        {
+            Assert.AreEqual(testCar.GasTankSize, testGasTankSize, 0.001d);
+        }
+
+        [TestMethod]
+        public void TestInitialGasLevel()
+        {
+            Assert.AreEqual(testCar.GasTankSize, testCar.GasTankLevel, 0.001d);
+        }
+
+        [TestMethod]
+        public void TestGasLevelAfterDriveInRange()
+        {
+            testCar.Drive(testMilesPerGallon);
+            Assert.AreEqual(testCar.GasTankLevel, testGasTankSize - 1d, 0.001d);
+        }
+
+        [TestMethod]
+        public void TestGasLevelAfterDriveAttemptOutOfRange()
+        {
+            double maxRange = testMilesPerGallon * testGasTankSize;
+            testCar.Drive(maxRange + 10d);
+            Assert.AreEqual(testCar.GasTankLevel, 0d, 0.001d);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void TestExceptionMoreGasThanTankSize()
+        {
+            testCar.AddGas(10d);
+            Assert.Fail("Cannot have more gas than tank capacity!");
+        }
 
     }
 }
